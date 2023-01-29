@@ -1,2 +1,2 @@
 # MemoryCommunication
-Swiftense communicates due Memory IPC with Clients on the local machine.
+Swiftense communicates due Memory Packets to Clients on the local machine. 
