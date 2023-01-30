@@ -49,13 +49,7 @@ MemClient* memc_open()
 void memc_send(MemClient* client, void* data, _nmap_size size)
 {
     // printf("MemClient.c:51 wait\n");
-    for(;;)
-    {
-        sem_wait(client->socket_lock_server);
-        if(*(char*)client->socket == MCON_EMPTY)
-            break;
-        sem_post(client->socket_lock_server);
-    }
+    while(*(char*)client->socket != MCON_EMPTY);
     // printf("MemClient.c:59 done\n");
     *((char*)client->socket) = MCON_TRANSFER;
     memcpy(client->socket+1, data, size);
