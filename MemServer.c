@@ -28,36 +28,30 @@ MemServer* mems_open()
     }
 
     memset(ret->socket, 0, DEFAULT_CONNECTION_BUFFER_SIZE);
-    *((char*)ret->socket) = MCON_EMPTY;
+    ret->socket+=3;
+    memcon_updateState(MCON_EMPTY, ret);
+    *((char*)ret->update1) = UPDATE_NONE;
     return ret;
 }
 
 void mems_wait(MemServer* server)
 {
-    //printf("MemServer.c:37 wait\n");
-    for(;;)
-    {
-        sem_wait(server->socket_lock_server);
-        if(*(char*)server->socket == MCON_WAITING)
-            break;
-        sem_post(server->socket_lock_server);
-    }
-    sem_post(server->socket_lock_server);
-    //printf("MemServer.c:39 done\n");
+    // printf("MemServer.c:42 wait\n");
+    memcon_awaitState(MCON_WAITING, server);
+    // printf("MemServer.c:44 done\n");
 }
 
 extern inline void mems_cleanbuf(MemServer* server)
 {
-    memset(server->socket +1, 0, DEFAULT_CONNECTION_BUFFER_SIZE);
+    memset(server->socket +3, 0, DEFAULT_CONNECTION_BUFFER_SIZE);
 }
 
 extern inline void mems_answer(MemServer* server, void* data, _nmap_size size)
 {
-    //printf("answering\n");
-    memcpy(server->socket+1, data, size);
-    sem_wait(server->socket_lock_server);
-    *(char*)server->socket = MCON_RESPONSED;
-    sem_post(server->socket_lock_server);
+    // printf("answering\n");
+    memcpy(server->socket+3, data, size);
+    // printf("answered\n");
+    memcon_updateState(MCON_RESPONSED, server);
 }
 
 void mems_close(MemServer* server)
@@ -67,7 +61,7 @@ void mems_close(MemServer* server)
     sem_unlink(DEFAULT_SERVER_SEMAPHORE_NAME);
     
     // detach shared memory from process's address space
-    if (shmdt(server->socket) == -1)
+    if (shmdt(server->socket-3) == -1)
     {
         perror("Error detaching shared memory");
         return 1;

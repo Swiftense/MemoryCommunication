@@ -29,7 +29,9 @@ MemClient* memc_open()
         return 1;
     }
 
-    if(*(char*)(ret->socket) == MCON_UNVAIL)
+    ret->socket+=3;
+
+    if(memcon_getState(ret) == MCON_UNVAIL)
     {
         printf("Error: Server not running.\n");
         /* unlink, since no server running and shared memory not needed */
@@ -48,46 +50,35 @@ MemClient* memc_open()
 
 void memc_send(MemClient* client, void* data, _nmap_size size)
 {
-    // printf("MemClient.c:51 wait\n");
-    while(*(char*)client->socket != MCON_EMPTY);
-    // printf("MemClient.c:59 done\n");
-    *((char*)client->socket) = MCON_TRANSFER;
-    memcpy(client->socket+1, data, size);
-    *((char*)client->socket) = MCON_WAITING;
+    // printf("MemClient.c:53 wait\n");
+    memcon_awaitAndSetState(MCON_EMPTY, MCON_TRANSFER, client);
+    memcpy(client->socket+3, data, size);
+    memcon_updateState(MCON_WAITING, client);
     sem_post(client->socket_lock_server);
-    // printf("MemClient.c:63 wait\n");
-    sem_post(client->socket_lock_server);
-    for(;;)
-    {
-        sem_wait(client->socket_lock_server);
-        if(*(char*)client->socket == MCON_RESPONSED)
-            break;
-        sem_post(client->socket_lock_server);
-    }
-    sem_post(client->socket_lock_server);
-    // printf("MemClient.c:72 done\n");
+    // printf("MemClient.c:58 wait\n");
+    memcon_awaitState(MCON_RESPONSED, client);
+    // printf("MemClient.c:60 done\n");
 }
 
 extern inline void memc_cleanbuf(MemClient* client)
 {
-    memset(client->socket + 1, 0, DEFAULT_CONNECTION_BUFFER_SIZE);
+    memset(client->socket + 3, 0, DEFAULT_CONNECTION_BUFFER_SIZE);
 }
 
 extern inline void memc_accept(MemClient* client)
 {
-    sem_wait(client->socket_lock_server);
-    *((char*)client->socket) = MCON_EMPTY;
-    sem_post(client->socket_lock_server);
+    memcon_updateState(MCON_EMPTY, client);
 }
 
 void memc_close(MemClient* client)
 {
     sem_close(client->socket_lock_server);
     /* detach shared memory */
-    if (shmdt(client->socket) == -1)
+    if (shmdt(client->socket - 3) == -1)
     {
         perror("Error detaching shared memory");
         _Exit(-1);
     }
     free(client);
 }
+

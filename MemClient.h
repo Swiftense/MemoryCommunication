@@ -4,14 +4,8 @@
         extern "C" {
     #endif
 
-    #include <sys/stat.h>
-    #include <sys/types.h>
-    #include <sys/mman.h>
-    #include <sys/ioctl.h>
     #include <sys/shm.h>
-
-    #include <semaphore.h>
-    #include <fcntl.h>
+    
     #include <unistd.h>
     #include <string.h>
     #include <stdio.h>
@@ -22,14 +16,7 @@
     #include "null.h"
     #include "NMap_types.h"
     
-    typedef struct _MemClient MemClient;
-    
-    struct _MemClient
-    {
-        _mem_socket socket;
-        int shm_id;
-        sem_t*socket_lock_server;
-    };
+    typedef struct _MemCon MemClient;
 
     MemClient* memc_open();
     /* waits until a message is sent to socket 
