@@ -36,8 +36,7 @@ extern inline void memcon_awaitState(enum _ConnectionState state_wait, struct _M
     for(int w = 0;;)
     {
         for(;w < 5; ++w)
-        {
-                            //printf("%d\n", *((char*)con->state1));
+        {;
             if(*((char*)con->state1) == state_wait)
             {
                 if(*((char*)con->update1) != UPDATE)
@@ -46,7 +45,6 @@ extern inline void memcon_awaitState(enum _ConnectionState state_wait, struct _M
         }
         for(;w > -1; --w)
         {
-                            //printf("%d\n", *((char*)con->state2));
             if(*((char*)con->state2) == state_wait)
             {
                 if(*((char*)con->update1) != UPDATE)
@@ -58,9 +56,12 @@ extern inline void memcon_awaitState(enum _ConnectionState state_wait, struct _M
 
 extern inline void memcon_updateState(enum _ConnectionState state_new, struct _MemCon* con)
 {
+    // critical change, didnt found a fix except for waiting
     memcon_setUpdate(UPDATE,con);
+    // usleep(10000);
     *((char*)con->state1) = state_new;
     *((char*)con->state2) = state_new;
+    // usleep(10000);
     memcon_setUpdate(UPDATE_NONE,con);
 }
 

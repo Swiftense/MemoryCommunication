@@ -11,7 +11,6 @@ void fallback(void)
 void main(void)
 {
     memclient = memc_open();
-    printf("%d\n", *(char*)memclient->socket);
     atexit(&fallback);
     signal(SIGINT, exit);
     
@@ -21,12 +20,12 @@ void main(void)
         printf("Send Message: ");
         scanf("%[^\n]", &message);
         memc_send(memclient, &message, strlen(&message));
-        printf("%d\n", *(char*)memclient->socket);
-        printf("Recieved Answer: %s\n", memclient->socket+3);
+        printf("%d\n", *(char*)memclient->con.socket);
+        printf("Recieved Answer: %s\n", memclient->con.socket);
         memc_accept(memclient);
-        printf("%d\n", *(char*)memclient->socket);
+        printf("%d\n", *(char*)memclient->con.socket);
     #elif defined(performance)
-        for(unsigned long long l = 0;l < 1000001; ++l)
+        for(unsigned long long l = 0;l < 1000000; ++l)
         {
             memc_send(memclient, &l, 8);
             memc_accept(memclient);
@@ -39,11 +38,12 @@ void main(void)
             char answer[DEFAULT_CONNECTION_BUFFER_SIZE];
             sprintf(&message, "cli: %lld", l);
             memc_send(memclient, &message, strlen(&message)+1);
-            strcpy(&answer, memclient->socket+3);
+            //strcpy(&answer, memclient->con.socket);
             //sleep(1);
+            printf("Recieved Answer: %s\n", memclient->con.socket);
             memc_accept(memclient);
             printf("Sent message: %s\n", &message);
-            printf("Recieved Answer: %s\n", &answer);
+            //printf("Recieved Answer: %s\n", &answer);
         }
     #endif
 }

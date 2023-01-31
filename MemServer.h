@@ -16,7 +16,12 @@
     #include "null.h"
     #include "NMap_types.h"
     
-    typedef struct _MemCon MemServer;
+    typedef struct _MemServer MemServer;
+
+    struct _MemServer
+    {
+        struct _MemCon con;
+    };
 
     MemServer* mems_open();
     extern inline void mems_answer(MemServer* server, void* data, _nmap_size size);
