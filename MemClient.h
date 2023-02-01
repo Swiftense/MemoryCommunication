@@ -16,13 +16,7 @@
     #include "null.h"
     #include "NMap_types.h"
     
-    typedef struct _MemClient MemClient;
-
-    struct _MemClient
-    {
-        struct _MemCon con;
-        unsigned char active;
-    };
+    typedef struct _MemCon MemClient;
 
     MemClient* memc_open();
     /* waits until a message is sent to socket 

@@ -16,7 +16,7 @@ void main(void)
     memserver = mems_open();
     #ifdef messanger
         mems_wait(memserver);
-        printf("Recieved Message: %s\n", memserver->con.socket);
+        printf("Recieved Message: %s\n", memserver->socket);
         printf("Send answer: ");
         char answer[DEFAULT_CONNECTION_BUFFER_SIZE];
         scanf("%[^\n]", &answer);
@@ -28,7 +28,7 @@ void main(void)
         for(;;)
         {
             mems_wait(memserver);
-            l = *(long long*)(((char*)memserver->con.socket));
+            l = *(long long*)(((char*)memserver->socket));
             mems_answer(memserver, &answer, 8);
             if(l % 10000 == 0)
                 printf("%lld\n", l);
@@ -38,7 +38,7 @@ void main(void)
         for(long long l;++l;)
         {
             mems_wait(memserver);
-            printf("Recieved Message: %s\n", memserver->con.socket);
+            printf("Recieved Message: %s\n", memserver->socket);
             sprintf(&answer, "ser: %d", l);
             mems_answer(memserver, &answer, strlen(&answer)+1);
         }

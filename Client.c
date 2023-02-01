@@ -20,12 +20,12 @@ void main(void)
         printf("Send Message: ");
         scanf("%[^\n]", &message);
         memc_send(memclient, &message, strlen(&message));
-        printf("%d\n", *(char*)memclient->con.socket);
-        printf("Recieved Answer: %s\n", memclient->con.socket);
+        printf("%d\n", *(char*)memclient->socket);
+        printf("Recieved Answer: %s\n", memclient->socket);
         memc_accept(memclient);
-        printf("%d\n", *(char*)memclient->con.socket);
+        printf("%d\n", *(char*)memclient->socket);
     #elif defined(performance)
-        for(unsigned long long l = 0;l < 1000000; ++l)
+        for(unsigned long long l = 0;l < 10000001; ++l)
         {
             memc_send(memclient, &l, 8);
             memc_accept(memclient);
@@ -38,9 +38,9 @@ void main(void)
             char answer[DEFAULT_CONNECTION_BUFFER_SIZE];
             sprintf(&message, "cli: %lld", l);
             memc_send(memclient, &message, strlen(&message)+1);
-            //strcpy(&answer, memclient->con.socket);
+            //strcpy(&answer, memclient->socket);
             //sleep(1);
-            printf("Recieved Answer: %s\n", memclient->con.socket);
+            printf("Recieved Answer: %s\n", memclient->socket);
             memc_accept(memclient);
             printf("Sent message: %s\n", &message);
             //printf("Recieved Answer: %s\n", &answer);

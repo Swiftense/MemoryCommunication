@@ -30,8 +30,7 @@ typedef void* _mem_socket;
         MCON_EMPTY,
         MCON_TRANSFER,
         MCON_WAITING,
-        MCON_RESPONSED,
-        MCON_ACCEPTED
+        MCON_RESPONSED
     };
 
     enum _UpdateState
@@ -39,17 +38,12 @@ typedef void* _mem_socket;
         UPDATE,
         UPDATE_NONE
     };
-
-    enum _ClientState
-    {
-        CLIENT_INACTIVE,
-        CLIENT_ACTIVE
-    };
-
+ 
     struct _MemCon
     {
         _mem_socket socket;
         int shm_id;
+        sem_t*socket_lock;
     };
 
     extern inline void memcon_awaitAndSetState(enum _ConnectionState state_wait, enum _ConnectionState state_new, struct _MemCon* con);

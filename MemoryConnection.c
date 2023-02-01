@@ -36,7 +36,7 @@ extern inline void memcon_awaitState(enum _ConnectionState state_wait, struct _M
     for(int w = 0;;)
     {
         for(;w < 5; ++w)
-        {;
+        {
             if(*((char*)con->state1) == state_wait)
             {
                 if(*((char*)con->update1) != UPDATE)
