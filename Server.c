@@ -33,7 +33,7 @@ void main(void)
             if(l % 10000 == 0)
                 printf("%lld\n", l);
         }
-    #else
+    #elif defined(count)
         char answer[DEFAULT_CONNECTION_BUFFER_SIZE];
         for(long long l;++l;)
         {
@@ -42,5 +42,7 @@ void main(void)
             sprintf(&answer, "ser: %d", l);
             mems_answer(memserver, &answer, strlen(&answer)+1);
         }
+    #else
+        printf("Usage: ./server.sh count\n       ./server.sh performance\n       ./server.sh messanger");
     #endif
 }

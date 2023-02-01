@@ -25,13 +25,13 @@ void main(void)
         memc_accept(memclient);
         printf("%d\n", *(char*)memclient->socket);
     #elif defined(performance)
-        for(unsigned long long l = 0;l < 10000001; ++l)
+        for(unsigned long long l = 0;l < 1000001; ++l)
         {
             memc_send(memclient, &l, 8);
             memc_accept(memclient);
         }
         exit(0);
-    #else
+    #elif defined(count)
         for(long long l; ++l;)
         {
             char message[DEFAULT_CONNECTION_BUFFER_SIZE];
@@ -45,5 +45,7 @@ void main(void)
             printf("Sent message: %s\n", &message);
             //printf("Recieved Answer: %s\n", &answer);
         }
+    #else
+        printf("Usage: ./client.sh count\n       ./client.sh performance\n       ./client.sh messanger");
     #endif
 }
