@@ -13,7 +13,7 @@ cd MemoryCommunication
 chmod +x client.sh && server.sh
 ```
 
-<p>Then you can run <code>./server.sh messanger</code> and <code>./client.sh messanger</code> to open a simple prompt that allows you to sent messages between client and server. But you can also run the scripts with the <strong>performance</strong> argument if you want to benchmark the performance or the <strong>count</strong> argument to just let the client and server counting.</p>
+<p>Then you can run <code>./server.sh messanger</code> and <code>./client.sh messanger</code> to open a simple prompt that allows you to sent messages between client and server. But you can also run the scripts with the <strong>performance</strong> argument if you want to benchmark the performance or the <strong>count</strong> argument to just make the client and server counting.</p>
 <h2>Problems</h2>
 <ul>
     <li>Everything in this repository is under heavy development and has no gauranty to work.</li>
